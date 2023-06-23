@@ -4,6 +4,9 @@ use App\Exceptions\ShopifyProductCreatorException;
 use App\Lib\AuthRedirection;
 use App\Lib\EnsureBilling;
 use App\Lib\ProductCreator;
+use App\Lib\ProductFetch;
+use App\Lib\ScriptTag;
+use App\Lib\UpdateCartDiscount;
 use App\Models\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -96,10 +99,27 @@ Route::get('/api/products/count', function (Request $request) {
     return response($result->getDecodedBody());
 })->middleware('shopify.auth');
 
-Route::get('/api/products/create', function (Request $request) {
+Route::get('/api/installScriptTag', function (Request $request) {
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
 
+    try {
+        $res = ScriptTag::call($session);
+        // $res = UpdateCartDiscount::call($session);
+        return response($res->getDecodedBody());
+    } catch (\Exception $e) {
+        $success = false;
+        Log::error("Failed to create script tags: $e");
+        return response()->json(['message' => "Got an exception when create script tags"], 500);
+    }
+
+})->middleware('shopify.auth');
+
+
+
+Route::get('/api/products/create', function (Request $request) {
+    /** @var AuthSession */
+    $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
     $success = $code = $error = null;
     try {
         ProductCreator::call($session, 5);
@@ -143,3 +163,18 @@ Route::post('/api/webhooks', function (Request $request) {
         return response()->json(['message' => "Got an exception when handling '$topic' webhook"], 500);
     }
 });
+
+Route::get('api/products', function(Request $request){
+    /** @var AuthSession */
+    $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+    $success = $code = $error = null;
+   
+    try {
+        $res = ProductFetch::call($session);
+        return response($res->getDecodedBody());
+    } catch (\Exception $e) {
+        $success = false;
+        Log::error("Failed to create products: $error");
+        return response()->json(['message' => "Got an exception when fetch data"], 500);
+    }
+})->middleware('shopify.auth');

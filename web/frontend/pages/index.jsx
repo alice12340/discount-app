@@ -13,6 +13,7 @@ import { TitleBar } from "@shopify/app-bridge-react";
 import { trophyImage } from "../assets";
 
 import { ProductsCard } from "../components";
+import { ScriptTag } from "../components/ScriptTag";
 
 export default function HomePage() {
   return (
@@ -79,6 +80,9 @@ export default function HomePage() {
         </Layout.Section>
         <Layout.Section>
           <ProductsCard />
+        </Layout.Section>
+        <Layout.Section>
+          <ScriptTag />
         </Layout.Section>
       </Layout>
     </Page>

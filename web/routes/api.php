@@ -1,5 +1,7 @@
 <?php
 
+use App\Lib\UpdateCartDiscount;
+use App\Models\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +18,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return "Hello API";
+});
+
+Route::post('updateCartDiscount', function(Request $request){
+    $sesion = Session::first();
+    $res = UpdateCartDiscount::call($sesion->shop, $sesion->access_token);
+    return json_encode($res);
 });

@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@shopify/app": "3.46.0",
-    "@shopify/cli": "3.46.0"
+    "@shopify/cli": "3.46.0",
+    "axios": "^1.4.0",
+    "laravel-mix": "^6.0.49"
   },
   "author": "Admin",
   "private": true,
