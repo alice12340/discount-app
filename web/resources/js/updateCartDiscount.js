@@ -1,7 +1,7 @@
 window.axios = require('axios');
 
 var pay_period = document.querySelector('#pay_period');
-var domain = 'https://bargain-determination-consistent-upc.trycloudflare.com';
+var domain = 'https://baghdad-wit-poverty-fc.trycloudflare.com';
 pay_period.addEventListener('change', function () {
   var pay_period_val = pay_period.value;
   var cartId = '';
@@ -11,8 +11,9 @@ pay_period.addEventListener('change', function () {
         pay_period_val: pay_period_val,
         cartId: cartId
       }).then(function (re) {
-        var totalAmount = re.data.cartDiscountCodesUpdate.cart.cost.totalAmount;
-        document.querySelector('.totals__subtotal-value').innerHTML = totalAmount;
+        var totalAmount = re.data.data.cartDiscountCodesUpdate.cart.cost.totalAmount.amount;
+        var currencyCode = re.data.data.cartDiscountCodesUpdate.cart.cost.totalAmount.currencyCode;
+        document.querySelector('.totals__subtotal-value').innerHTML = totalAmount + ' ' + currencyCode;
 
     })["catch"](function (e) {
       console.log(e);
