@@ -14,8 +14,7 @@
   "dependencies": {
     "@shopify/app": "3.46.0",
     "@shopify/cli": "3.46.0",
-    "axios": "^1.4.0",
-    "laravel-mix": "^6.0.49"
+    "axios": "^1.4.0"
   },
   "author": "Admin",
   "private": true,
@@ -23,5 +22,8 @@
     "web",
     "web/frontend",
     "extensions/*"
-  ]
+  ],
+  "devDependencies": {
+    "laravel-mix": "^6.0.49"
+  }
 }

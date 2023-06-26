@@ -40,8 +40,8 @@ class AppServiceProvider extends ServiceProvider
         Context::initialize(
             env('SHOPIFY_API_KEY', 'not_defined'),
             env('SHOPIFY_API_SECRET', 'not_defined'),
-            // env('SCOPES', 'read_products,write_products,read_script_tags,write_script_tags'),
-           'read_products,write_products,read_script_tags,write_script_tags,unauthenticated_write_customers',
+            // env('SCOPES', 'not_defined'),
+            'read_products,write_products,read_script_tags,write_script_tags,unauthenticated_write_customers,read_price_rules,write_price_rules,read_discounts,write_discounts',
             $host,
             new DbSessionStorage(),
             ApiVersion::LATEST,

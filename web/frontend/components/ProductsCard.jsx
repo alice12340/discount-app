@@ -37,16 +37,16 @@ export function ProductsCard() {
     setIsLoading(true);
     const response = await fetch("/api/products/create");
 
-    if (response.ok) {
-      await refetchProductCount();
-      setToastProps({ content: "5 products created!" });
-    } else {
-      setIsLoading(false);
-      setToastProps({
-        content: "There was an error creating products",
-        error: true,
-      });
-    }
+    // if (response.ok) {
+    //   await refetchProductCount();
+    //   setToastProps({ content: "5 products created!" });
+    // } else {
+    //   setIsLoading(false);
+    //   setToastProps({
+    //     content: "There was an error creating products",
+    //     error: true,
+    //   });
+    // }
   };
 
   return (
