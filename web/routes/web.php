@@ -2,6 +2,7 @@
 
 use App\Exceptions\ShopifyProductCreatorException;
 use App\Lib\AuthRedirection;
+use App\Lib\DiscountCreator;
 use App\Lib\EnsureBilling;
 use App\Lib\ProductCreator;
 use App\Lib\ProductFetch;
@@ -115,6 +116,14 @@ Route::get('/api/installScriptTag', function (Request $request) {
 
 })->middleware('shopify.auth');
 
+Route::get('/api/discount/List', function (Request $request) {
+    /** @var AuthSession */
+    $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+
+    $client = new Rest($session->getShop(), $session->getAccessToken());
+    $result = $client->get('price_rules');
+    return response($result->getDecodedBody());
+})->middleware('shopify.auth');
 
 
 Route::get('/api/products/create', function (Request $request) {
@@ -146,10 +155,30 @@ Route::get('/api/products/create', function (Request $request) {
     }
 })->middleware('shopify.auth');
 
+Route::get('/api/discount/create', function (Request $request) {
+    /** @var AuthSession */
+    $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+    $success = $code = $error = null;
+    try {
+        DiscountCreator::call($session);
+        $success = true;
+        $code = 200;
+        $error = null;
+    } catch (\Exception $e) {
+        $success = false;
+        $code = 500;
+        $error = $e->getMessage();
+        Log::error("Failed to create discount: $error");
+    } finally {
+        return response()->json(["success" => $success, "error" => $error], $code);
+    }
+})->middleware('shopify.auth');
+
+
 Route::post('/api/webhooks', function (Request $request) {
     try {
         $topic = $request->header(HttpHeaders::X_SHOPIFY_TOPIC, '');
-
+        file_put_contents('33.txt', print_r($request->getContent(), true));
         $response = Registry::process($request->header(), $request->getContent());
         if (!$response->isSuccess()) {
             Log::error("Failed to process '$topic' webhook: {$response->getErrorMessage()}");
