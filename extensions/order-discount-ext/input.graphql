@@ -1,0 +1,21 @@
+query Input {
+  cart {
+    attribute (key: "payPeriod") {
+      value
+    }
+    lines {
+      quantity
+      merchandise {
+        __typename
+        ...on ProductVariant {
+            id
+        }
+      }
+    }
+  }
+  discountNode {
+    metafield(namespace: "order-discount-ext", key: "function-configuration"){
+      value
+    }
+  }
+}

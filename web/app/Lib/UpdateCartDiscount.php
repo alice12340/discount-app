@@ -69,8 +69,8 @@ class UpdateCartDiscount
     private const CART_UPDATE_MUTATION = <<<'QUERY'
     mutation {
             cartDiscountCodesUpdate(
-                cartId:"gid://shopify/Cart/c1-22db8e5e9829b8595b77671d7f8e3f38",
-                discountCodes:["30d"]
+                cartId:"gid://shopify/Cart/c1-30902fbfd26bcae82ed6b54da472a9d6",
+                discountCodes:["11"]
               ) {
                 cart {
                   id

@@ -14,7 +14,7 @@ class DiscountCreator
     mutation {
         discountCodeBasicCreate(
           basicCodeDiscount: {
-            title: "code basic test"
+            title: "code basic test11"
             startsAt: "2019-01-01"
             endsAt: "2025-01-01"
             customerSelection: { all: true }

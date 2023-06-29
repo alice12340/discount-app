@@ -4,7 +4,7 @@ import {
   useIndexResourceState,
   Page,
   Layout,
-  TextContainer, Heading, EmptySearchResult, Modal, TextField
+  TextContainer, Heading, EmptySearchResult, Modal, TextField, Loading, Frame
 } from '@shopify/polaris';
 import React from 'react';
 import { useState } from "react";
@@ -12,6 +12,7 @@ import { TitleBar, Toast } from "@shopify/app-bridge-react";
 import { useAppQuery, useAuthenticatedFetch } from "../hooks";
 
 export default function DiscountList() {
+  const fetch = useAuthenticatedFetch();
   const [isLoading, setIsLoading] = useState(true);
   const [isAddDiscount, setIsAddDiscount] = useState(false);
   const [payPeriod, setPayPeriod] = useState('');
@@ -27,7 +28,6 @@ export default function DiscountList() {
     reactQueryOptions: {
       onSuccess: () => {
         setIsLoading(false);
-        
       },
     },
   });
@@ -41,7 +41,6 @@ export default function DiscountList() {
   const handleModalClose = () => {
     setIsAddDiscount(false);
   };
-
  
   const handlePayPeriodChange = (value) => {
     setPayPeriod(value);
@@ -62,8 +61,14 @@ export default function DiscountList() {
   };
 
   const handleSave = async () => {
-    const response = await fetch("/api/discount/create");
-
+    const response = await fetch("/api/discount/create",{
+      method: "POST",
+      body:{
+        'payPeriod': payPeriod,
+        'discountCode': discountCode,
+        'discountPercentage': discountPercentage
+      }
+    });
     if (response.ok) {
       await refetchDiscountList();
       setToastProps({ content: "discount created!" });
@@ -93,7 +98,7 @@ export default function DiscountList() {
       <IndexTable.Row
         id={id}
         key={id}
-        selected={selectedResources.includes(id)}
+        // selected={selectedResources.includes(id)}
         position={index}
       >
         
@@ -105,26 +110,33 @@ export default function DiscountList() {
   )  : "";
 
   const table_content = !isLoading ? 
-  <Card>
-    <IndexTable
-      resourceName={resourceName}
-      itemCount={data.price_rules.length}
-      selectedItemsCount={
-        allResourcesSelected ? 'All' : selectedResources.length
-      }
-      onSelectionChange={handleSelectionChange}
-      emptyState={emptyStateMarkup}
-      headings={[
-        {title: 'Discount Name'},
-        {title: 'Discount Type'},
-        {title: 'Discount Value'},
-      
-      ]}
-    >
-      {rowMarkup}
-    </IndexTable>
-  </Card>
-  : '';
+      <Layout>
+        <Layout.Section>
+          <Card>
+            <IndexTable
+              resourceName={resourceName}
+              itemCount={data.price_rules.length}
+              // selectedItemsCount={
+              //   allResourcesSelected ? 'All' : selectedResources.length
+              // }
+              // onSelectionChange={handleSelectionChange}
+              emptyState={emptyStateMarkup}
+              headings={[
+                {title: 'Discount Name'},
+                {title: 'Discount Type'},
+                {title: 'Discount Value'},
+              
+              ]}
+            >
+              {rowMarkup}
+            </IndexTable>
+          </Card>
+        </Layout.Section>
+      </Layout>
+      :
+      <Frame>
+        <Loading />
+      </Frame> ;
  
 
   return (
@@ -132,7 +144,7 @@ export default function DiscountList() {
       <TitleBar
         title="Discount List"
         primaryAction={{
-          content: "Primary action",
+          content: "Add",
           onAction: () => {
             setIsAddDiscount(true);
           },
@@ -144,11 +156,9 @@ export default function DiscountList() {
         //   },
         // ]}
       />
-      <Layout>
-        <Layout.Section>
+   
       {table_content}
-      </Layout.Section>
-      </Layout>
+   
       <Modal
         open={isAddDiscount}
         onClose={handleModalClose}
