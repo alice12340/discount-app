@@ -3,6 +3,7 @@
 use App\Exceptions\ShopifyProductCreatorException;
 use App\Lib\AuthRedirection;
 use App\Lib\DiscountCreator;
+use App\Lib\DiscountDetail;
 use App\Lib\EnsureBilling;
 use App\Lib\ProductCreator;
 use App\Lib\ProductFetch;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Shopify\Auth\OAuth;
 use Shopify\Auth\Session as AuthSession;
+use Shopify\Clients\Graphql;
 use Shopify\Clients\HttpHeaders;
 use Shopify\Clients\Rest;
 use Shopify\Context;
@@ -131,7 +133,7 @@ Route::get('/api/products/create', function (Request $request) {
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
     $success = $code = $error = null;
     try {
-        ProductCreator::call($session, 5);
+        $respone = ProductCreator::call($session, 5);
         $success = true;
         $code = 200;
         $error = null;
@@ -151,16 +153,72 @@ Route::get('/api/products/create', function (Request $request) {
 
         Log::error("Failed to create products: $error");
     } finally {
-        return response()->json(["success" => $success, "error" => $error], $code);
+        return response(($respone), $code);
     }
 })->middleware('shopify.auth');
 
-Route::get('/api/discount/create', function (Request $request) {
+// Route::get('/api/discount/create', function (Request $request) {
+//     /** @var AuthSession */
+//     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+//     $success = $code = $error = null;
+//     try {
+//         DiscountCreator::call($session);
+//         $success = true;
+//         $code = 200;
+//         $error = null;
+//     } catch (\Exception $e) {
+//         $success = false;
+//         $code = 500;
+//         $error = $e->getMessage();
+//         Log::error("Failed to create discount: $error");
+//     } finally {
+//         return response()->json(["success" => $success, "error" => $error], $code);
+//     }
+// })->middleware('shopify.auth');
+
+Route::post('/api/discounts/automatic', function (Request $request) {
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
     $success = $code = $error = null;
     try {
-        DiscountCreator::call($session);
+        $type = 'auto';
+        $res = DiscountCreator::call($type, $session, $request->json()->all());
+        $error = null;
+    } catch (\Exception $e) {
+        $success = false;
+        $code = 500;
+        $error = $e->getMessage();
+        Log::error("Failed to create discount: $error");
+    } finally {
+        return response($res->getDecodedBody());
+    }
+})->middleware('shopify.auth');
+
+Route::get('/api/discount/detail', function (Request $request) {
+    /** @var AuthSession */
+    $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+    try{
+        $id = $request->get('id');
+        $res = DiscountDetail::call($session, $id);
+    } catch (\Exception $e) {
+        $error = $e->getMessage();
+        Log::error("Failed to create discount: $error");
+    } finally {
+        return response($res->getDecodedBody());
+    }    
+    return response($res->getDecodedBody());
+})->middleware('shopify.auth');
+
+
+
+Route::post('/api/discounts/code', function (Request $request) {
+    /** @var AuthSession */
+    $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+    $success = $code = $error = null;
+    try {
+        $type = 'code';
+       
+        DiscountCreator::call($type, $session, $request->json());
         $success = true;
         $code = 200;
         $error = null;
@@ -173,6 +231,8 @@ Route::get('/api/discount/create', function (Request $request) {
         return response()->json(["success" => $success, "error" => $error], $code);
     }
 })->middleware('shopify.auth');
+
+
 
 
 Route::post('/api/webhooks', function (Request $request) {

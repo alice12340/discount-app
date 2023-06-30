@@ -5,11 +5,39 @@ declare(strict_types=1);
 namespace App\Lib;
 
 use Exception;
+use Illuminate\Http\Request;
 use Shopify\Auth\Session;
 use Shopify\Clients\Graphql;
 
 class DiscountCreator
 {
+    private const CREATE_CODE_MUTATION = <<<'QUERY'
+    mutation CreateCodeDiscount($discount: DiscountCodeAppInput!) {
+      discountCreate: discountCodeAppCreate(codeAppDiscount: $discount) {
+        userErrors {
+          code
+          message
+          field
+        }
+      }
+    }
+    QUERY;
+
+    private const CREATE_AUTOMATIC_MUTATION = <<<'QUERY'
+    mutation CreateAutomaticDiscount($discount: DiscountAutomaticAppInput!) {
+      discountCreate: discountAutomaticAppCreate(
+        automaticAppDiscount: $discount
+      ) {
+        userErrors {
+          code
+          message
+          field
+        }
+      }
+    }
+    QUERY;
+
+
     private const CREATE_DISCOUNT_MUTATION = <<<'QUERY'
     mutation {
         discountCodeBasicCreate(
@@ -55,21 +83,22 @@ class DiscountCreator
       }
     QUERY;
 
-    public static function call(Session $session)
+    public static function call($type, Session $session, $request)
     {
+    
         $client = new Graphql($session->getShop(), $session->getAccessToken());
+        $response = $client->query(
+            [
+                "query" => $type == 'auto' ? self::CREATE_AUTOMATIC_MUTATION : self::CREATE_CODE_MUTATION,
+                "variables" => $request
+            ],
+        );
+        file_put_contents('dd.txt', print_r($response->getDecodedBody(), true));
 
-            $response = $client->query(
-                [
-                    "query" => self::CREATE_DISCOUNT_MUTATION,
-                ],
-            );
-            file_put_contents('66.txt', print_r($response, true));
-
-            if ($response->getStatusCode() !== 200) {
-                throw new \Exception($response->getBody()->__toString());
-            }
-        
+        if ($response->getStatusCode() !== 200) {
+            throw new \Exception($response->getBody()->__toString());
+        }
+        return $response;
     }
 
    
