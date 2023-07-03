@@ -1,5 +1,6 @@
 <?php
 
+use App\Lib\DiscountList;
 use App\Lib\UpdateCartDiscount;
 use App\Models\Session;
 use Illuminate\Http\Request;
@@ -23,5 +24,11 @@ Route::get('/', function () {
 Route::post('updateCartDiscount', function(Request $request){
     $sesion = Session::first();
     $res = UpdateCartDiscount::call($sesion->shop, $sesion->access_token);
+    return json_encode($res);
+});
+
+Route::get('getCartDiscounts', function (Request $request){
+    $sesion = Session::first();
+    $res = DiscountList::call($sesion->shop, $sesion->access_token);
     return json_encode($res);
 });

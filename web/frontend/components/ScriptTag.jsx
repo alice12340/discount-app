@@ -29,7 +29,7 @@ export function ScriptTag() {
   //   },
   // });
 
-  const toastMarkup = toastProps.content && !isRefetchingCount && (
+  const toastMarkup = toastProps.content && !isLoading && (
     <Toast {...toastProps} onDismiss={() => setToastProps(emptyToastProps)} />
   );
 
