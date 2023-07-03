@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'api/graphql',
         'api/webhooks',
-        'api/discounts/automatic'
+        'api/discounts/automatic',
+        'api/discount/automaticUpdate'
     ];
 }

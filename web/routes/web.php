@@ -194,6 +194,24 @@ Route::post('/api/discounts/automatic', function (Request $request) {
     }
 })->middleware('shopify.auth');
 
+Route::post('/api/discount/automaticUpdate', function (Request $request) {
+    /** @var AuthSession */
+    $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+    $success = $code = $error = null;
+    try {
+        $type = 'update';
+        $res = DiscountCreator::call($type, $session, $request->json()->all());
+        $error = null;
+    } catch (\Exception $e) {
+        $success = false;
+        $code = 500;
+        $error = $e->getMessage();
+        Log::error("Failed to create discount: $error");
+    } finally {
+        return response($res->getDecodedBody());
+    }
+})->middleware('shopify.auth');
+
 Route::get('/api/discount/detail', function (Request $request) {
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active

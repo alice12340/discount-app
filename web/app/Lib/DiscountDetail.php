@@ -17,6 +17,7 @@ class DiscountDetail
         id
         metafield(namespace: "$app:order-discount-ext",key: "function-configuration"){
           value
+          id
         }
         automaticDiscount {
           __typename

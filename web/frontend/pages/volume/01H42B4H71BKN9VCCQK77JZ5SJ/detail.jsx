@@ -102,9 +102,8 @@ export default function DiscountDetail() {
                 endsAt: form.endDate,
                 metafields: [
                     {
-                        namespace: METAFIELD_NAMESPACE,
-                        key: METAFIELD_CONFIGURATION_KEY,
-                        type: "json",
+                        // namespace: METAFIELD_NAMESPACE,
+                        id: discountData.data.automaticDiscountNode.metafield.id,
                         value: JSON.stringify({ // Populate metafield from form data
                             payPeriod: parseInt(form.configuration.payPeriod),
                             percentage: parseFloat(form.configuration.percentage),
@@ -115,13 +114,14 @@ export default function DiscountDetail() {
 
             let response;
             if (form.discountMethod === DiscountMethod.Automatic) {
-                response = await authenticatedFetch("/api/discounts/automatic", {
+                response = await authenticatedFetch("/api/discount/automaticUpdate", {
                     method: "POST",
                     headers: { "Content-Type": "application/json"},
                     body: JSON.stringify({
                         discount: {
                           ...discount,
                           title: form.discountTitle,
+                          id: id,
                         },
                       }),
                 });
@@ -140,7 +140,7 @@ export default function DiscountDetail() {
             }
 
             const data = (await response.json()).data;
-            const remoteErrors = data.discountCreate.userErrors;
+            const remoteErrors = data.discountUpdate.userErrors;
             if (remoteErrors.length > 0) {
                 return { status: "fail", errors: remoteErrors };
             }

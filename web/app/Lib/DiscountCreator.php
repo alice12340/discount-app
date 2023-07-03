@@ -37,6 +37,21 @@ class DiscountCreator
     }
     QUERY;
 
+    private const UPDATE_AUTOMATIC_MUTATION = <<<'QUERY'
+    mutation UpdateDiscountAutomaticApp($id: ID!, $discount: DiscountAutomaticAppInput!) {
+      discountUpdate: discountAutomaticAppUpdate(
+        id: $id
+        automaticAppDiscount: $discount
+        
+    ) {
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+    QUERY;
+
 
     private const CREATE_DISCOUNT_MUTATION = <<<'QUERY'
     mutation {
@@ -85,15 +100,29 @@ class DiscountCreator
 
     public static function call($type, Session $session, $request)
     {
-    
         $client = new Graphql($session->getShop(), $session->getAccessToken());
-        $response = $client->query(
-            [
-                "query" => $type == 'auto' ? self::CREATE_AUTOMATIC_MUTATION : self::CREATE_CODE_MUTATION,
-                "variables" => $request
-            ],
-        );
-        file_put_contents('dd.txt', print_r($response->getDecodedBody(), true));
+        if ($type === 'auto'){
+            $response = $client->query(
+              [
+                  "query" => self::CREATE_AUTOMATIC_MUTATION,
+                  "variables" => $request,
+              ],
+            );
+        }else{
+            $id = $request['discount']['id'];
+            unset($request['discount']['id']);
+            $variables  =[
+              'id' => 'gid://shopify/DiscountAutomaticNode/'.$id,
+              'discount'  => $request['discount']
+            ];
+            $response = $client->query(
+              [
+                  "query" => self::UPDATE_AUTOMATIC_MUTATION,
+                  "variables" => $variables,
+              ],
+            );
+        }
+        // file_put_contents('33.txt', print_r($variables, true));
 
         if ($response->getStatusCode() !== 200) {
             throw new \Exception($response->getBody()->__toString());
