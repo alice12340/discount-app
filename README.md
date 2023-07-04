@@ -99,6 +99,18 @@ These are the typical steps needed to set up a Laravel app once it's cloned:
     touch storage/db.sqlite
     ```
 
+    if you choose mysql as your database
+    you will need to configure  the database like so:
+    ...
+    DB_CONNECTION=mysql
+    DB_HOST=localhost
+    DB_PORT=3306
+    DB_DATABASE=shopify
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ...
+
+
     **NOTE**: Once you create the database file, make sure to update your `DB_DATABASE` variable in `.env` since Laravel requires a full path to the file.
 
 1. Generate an `APP_KEY` for your app:
