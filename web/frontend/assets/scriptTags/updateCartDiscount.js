@@ -5354,31 +5354,34 @@ var __webpack_exports__ = {};
   !*** ./web/resources/js/updateCartDiscount.js ***!
   \************************************************/
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/dist/browser/axios.cjs");
-var domain = 'https://pipe-channels-fan-housewares.trycloudflare.com';
+var domain = 'https://carmen-grocery-israeli-llp.trycloudflare.com';
 axios.get('cart.js').then(function (response) {
   var payPeriod = response.data.attributes.payPeriod;
   console.log(payPeriod);
   var selectContext = '<p class="cart-attribute__field">\
   <label>Pay period</label><br>\
-  <select id="pay-period" name="attributes[payPeriod]" style="width: 100px;"><option  value=""';
-  if (payPeriod == '') {
+  <select id="pay-period" name="attributes[payPeriod]" style="width: 100px;"><option  value="-1"';
+  if (payPeriod == '-1') {
     selectContext += ' selected="selected"';
   }
   selectContext += '>please select</option>';
-  axios.get(domain + '/api/getCartDiscounts').then(function (re) {
-    for (var key in re.data) {
-      selectContext += '<option\
-      value="' + re.data[key].value + '"';
-      if (parseInt(re.data[key].value) == parseInt(payPeriod)) {
-        selectContext += ' selected="selected"';
-      }
-      selectContext += '>' + re.data[key].title + '</option>';
+  if (!localStorage.getItem('config')) {
+    axios.get(domain + '/api/getCartDiscounts').then(function (re) {
+      localStorage.setItem('config', JSON.stringify(re.data));
+    })["catch"](function (e) {
+      console.log(e);
+    });
+  }
+  var data = JSON.parse(localStorage.getItem('config'));
+  for (var key in data) {
+    selectContext += '<option\
+    value="' + data[key].value + '"';
+    if (parseInt(data[key].value) == parseInt(payPeriod)) {
+      selectContext += ' selected="selected"';
     }
-    ;
-    document.querySelector('#payPeriodDiv').innerHTML = selectContext;
-  })["catch"](function (e) {
-    console.log(e);
-  });
+    selectContext += '>' + data[key].title + '</option>';
+  }
+  document.querySelector('#payPeriodDiv').innerHTML = selectContext;
 })["catch"](function (e) {
   console.log(e);
 });

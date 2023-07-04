@@ -1,5 +1,5 @@
 window.axios = require('axios');
-var domain = 'https://pipe-channels-fan-housewares.trycloudflare.com';
+var domain = 'https://carmen-grocery-israeli-llp.trycloudflare.com';
 axios.get('cart.js').then(function (response) {
   var payPeriod = response.data.attributes.payPeriod;
   console.log(payPeriod);
@@ -9,23 +9,25 @@ axios.get('cart.js').then(function (response) {
       if (payPeriod == '-1'){
         selectContext += ' selected="selected"';
       }
-    selectContext += '>please select</option>';
-  
-  axios.get(domain + '/api/getCartDiscounts').then(function (re) {
-    for (const key in re.data) {
-      selectContext += '<option\
-      value="'+re.data[key].value+'"';
-      if (parseInt(re.data[key].value) == parseInt(payPeriod)) {
-        selectContext += ' selected="selected"';
-      }
-      selectContext += '>'+ re.data[key].title+'</option>';
-    };
-  
-    document.querySelector('#payPeriodDiv').innerHTML = selectContext;
-  }).catch(function (e) {
-    console.log(e);
-  });
-
+  selectContext += '>please select</option>';
+  if (!localStorage.getItem('config')){
+    axios.get(domain + '/api/getCartDiscounts').then(function (re) {
+      localStorage.setItem('config', JSON.stringify(re.data));
+      
+    }).catch(function (e) {
+      console.log(e);
+    });
+  }
+  const data = JSON.parse(localStorage.getItem('config'));
+  for (const key in data) {
+    selectContext += '<option\
+    value="'+data[key].value+'"';
+    if (parseInt(data[key].value) == parseInt(payPeriod)) {
+      selectContext += ' selected="selected"';
+    }
+    selectContext += '>'+data[key].title+'</option>';
+  }
+  document.querySelector('#payPeriodDiv').innerHTML = selectContext;
 
 }).catch(function (e) {
   console.log(e);
