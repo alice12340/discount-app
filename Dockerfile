@@ -11,6 +11,7 @@ RUN docker-php-ext-install pdo
 
 COPY --chown=www-data:www-data web /app
 WORKDIR /app
+RUN chmod -R 644 /app
 
 # Overwrite default nginx config
 COPY web/nginx.conf /etc/nginx/nginx.conf
