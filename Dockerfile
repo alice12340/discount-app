@@ -9,12 +9,13 @@ RUN apk update && apk add --update nodejs npm \
 
 RUN docker-php-ext-install pdo
 
+COPY web/nginx.conf /etc/nginx/nginx.conf
+
 COPY --chown=www-data:www-data web /app
 WORKDIR /app
-RUN chmod -R 644 /app
 
 # Overwrite default nginx config
-COPY web/nginx.conf /etc/nginx/nginx.conf
+
 
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
