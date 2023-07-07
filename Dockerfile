@@ -21,9 +21,6 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 RUN composer install
 RUN touch /app/storage/db.sqlite
 RUN chown www-data:www-data /app/storage/db.sqlite
-RUN chown www-data:www-data /app
-RUN chown www-data:www-data /app/entrypoint.sh
-RUN sudo chmod 775 /app/entrypoint.sh
 
 RUN cd frontend && npm install && npm run build
 RUN composer build
