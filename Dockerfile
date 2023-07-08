@@ -9,8 +9,9 @@ RUN apk update && apk add --update nodejs npm \
 
 RUN docker-php-ext-install pdo pdo_mysql
 
-COPY --chown=www-data:www-data web /app
-WORKDIR /app
+# COPY --chown=www-data:www-data web /app
+# WORKDIR /app
+WORKDIR /web
 
 # Overwrite default nginx config
 COPY web/nginx.conf /etc/nginx/nginx.conf
@@ -19,14 +20,14 @@ COPY web/nginx.conf /etc/nginx/nginx.conf
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 RUN composer install
-RUN chmod +x /app/storage
-RUN touch /app/storage/db.sqlite
-RUN chown www-data:www-data /app/storage/db.sqlite
+RUN chmod +x /web/storage
+RUN touch /web/storage/db.sqlite
+RUN chown www-data:www-data /web/storage/db.sqlite
 
 RUN cd frontend && npm install && npm run build
 RUN composer build
-RUN chown www-data:www-data /app
-RUN chmod +x /app/storage/db.sqlite
-RUN chmod +x /app/entrypoint.sh
+RUN chown www-data:www-data /web
+RUN chmod +x /web/storage/db.sqlite
+RUN chmod +x /web/entrypoint.sh
 
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+ENTRYPOINT [ "/web/entrypoint.sh" ]

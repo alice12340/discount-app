@@ -99,8 +99,7 @@ These are the typical steps needed to set up a Laravel app once it's cloned:
     touch storage/db.sqlite
     ```
 
-    if you choose mysql as your database
-    you will need to configure  the database like so:
+    if you choose mysql as your database, you will need to create the database  and configure the database like so:
     ...
     DB_CONNECTION=mysql
     DB_HOST=localhost
