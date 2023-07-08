@@ -21,10 +21,11 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 RUN composer install
 RUN chmod +x /app/storage
 RUN touch /app/storage/db.sqlite
-RUN chown www-data:www-data /app/storage/db.sqlite
+RUN chown www-data:www-data
 
 RUN cd frontend && npm install && npm run build
 RUN composer build
+RUN chmod +x /app
 RUN chmod +x /app/storage/db.sqlite
 RUN chmod +x /app/entrypoint.sh
 
