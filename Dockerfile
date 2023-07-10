@@ -18,13 +18,14 @@ COPY web/nginx.conf /etc/nginx/nginx.conf
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-RUN composer install
+RUN composer install --no-scripts 
+RUN composer clearcache
 RUN touch /app/storage/db.sqlite
 RUN chown www-data:www-data /app/storage/db.sqlite
 
-RUN cd frontend && npm install && npm run build
+RUN cd frontend && npm install && RUN npm install && npm cache clean --force && npm run build
 RUN composer build
-RUN chown -R www-data:www-data  /app
+# RUN chown -R www-data:www-data  /app
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT [ "/app/entrypoint.sh" ]
