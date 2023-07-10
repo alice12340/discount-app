@@ -23,7 +23,6 @@ RUN touch /app/storage/db.sqlite
 RUN chown www-data:www-data /app/storage/db.sqlite
 
 RUN cd frontend && npm install && npm run build
-CMD ["npm", "run", "serve"]
 RUN composer build
 RUN chown -R www-data:www-data  /app
 RUN chmod +x /app/entrypoint.sh
