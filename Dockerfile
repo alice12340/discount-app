@@ -23,7 +23,7 @@ RUN composer clearcache
 RUN touch /app/storage/db.sqlite
 RUN chown www-data:www-data /app/storage/db.sqlite
 
-RUN cd frontend && npm install && RUN npm install && npm run build
+RUN cd frontend && npm install && npm install && npm cache clean --force && npm run build
 RUN composer build
 # RUN chown -R www-data:www-data  /app
 RUN chmod +x /app/entrypoint.sh
