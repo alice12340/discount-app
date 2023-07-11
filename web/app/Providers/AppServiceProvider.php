@@ -7,6 +7,7 @@ use App\Lib\Handlers\AppUninstalled;
 use App\Lib\Handlers\Gdpr\CustomersDataRequest;
 use App\Lib\Handlers\Gdpr\CustomersRedact;
 use App\Lib\Handlers\Gdpr\ShopRedact;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Shopify\Context;
@@ -40,9 +41,9 @@ class AppServiceProvider extends ServiceProvider
         Context::initialize(
             env('SHOPIFY_API_KEY', 'not_defined'),
             env('SHOPIFY_API_SECRET', 'not_defined'),
-            // env('SCOPES', 'not_defined'),
-            'read_products,write_products,read_script_tags,write_script_tags,
-            write_discounts,read_products,read_shipping,read_customers,unauthenticated_write_customers,read_price_rules,write_price_rules,read_discounts,write_discounts',
+            env('SCOPES', 'not_defined'),
+            // 'read_products,write_products,read_script_tags,write_script_tags,
+            // write_discounts,read_products,read_shipping,read_customers,unauthenticated_write_customers,read_price_rules,write_price_rules,read_discounts,write_discounts',
             $host,
             new DbSessionStorage(),
             ApiVersion::LATEST,
@@ -72,5 +73,6 @@ class AppServiceProvider extends ServiceProvider
         Registry::addHandler('CUSTOMERS_DATA_REQUEST', new CustomersDataRequest());
         Registry::addHandler('CUSTOMERS_REDACT', new CustomersRedact());
         Registry::addHandler('SHOP_REDACT', new ShopRedact());
+        Schema::defaultStringLength(191);
     }
 }
