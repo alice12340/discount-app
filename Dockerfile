@@ -20,8 +20,8 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 RUN composer install --no-scripts 
 RUN composer clearcache
-RUN touch /app/storage/db.sqlite
-RUN chown www-data:www-data /app/storage/db.sqlite
+# RUN touch /app/storage/db.sqlite
+# RUN chown www-data:www-data /app/storage/db.sqlite
 
 RUN cd frontend && npm install && npm install && npm cache clean --force && npm run build
 RUN composer build
