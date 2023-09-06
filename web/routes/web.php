@@ -10,6 +10,7 @@ use App\Lib\ProductFetch;
 use App\Lib\ScriptTag;
 use App\Lib\UpdateCartDiscount;
 use App\Models\Session;
+use App\Models\WarehouseSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -271,17 +272,51 @@ Route::post('/api/webhooks', function (Request $request) {
     }
 });
 
-Route::get('api/products', function(Request $request){
+Route::get('api/product/List', function(Request $request){
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
     $success = $code = $error = null;
    
     try {
-        $res = ProductFetch::call($session);
-        return response($res->getDecodedBody());
+        $res = ProductFetch::call($session, $request);
+        return response(json_encode($res));
     } catch (\Exception $e) {
         $success = false;
         Log::error("Failed to create products: $error");
         return response()->json(['message' => "Got an exception when fetch data"], 500);
     }
 })->middleware('shopify.auth');
+
+Route::get('api/inventorySetting/detail', function(Request $request){
+    /** @var AuthSession */
+    $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+    $success = $code = $error = null;
+   
+    try {
+        $min_inventory = WarehouseSetting::where('shop', $session->getShop())->value('min_inventory');
+        return response($min_inventory);
+    } catch (\Exception $e) {
+        $success = false;
+        Log::error("Failed to get inventory setting: $error");
+        return response()->json(['message' => "Got an exception when fetch data"], 500);
+    }
+})->middleware('shopify.auth');
+
+Route::post('api/updateMinInventory', function (Request $request) {
+    /** @var AuthSession */
+    $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+    $success = $code = $error = null;
+    $inventorySetting = $request->post('inventorySetting');
+    try {
+        $res = WarehouseSetting::where('shop', $session->getShop())->update(['min_inventory' => $inventorySetting['minInventory']]);
+    } catch (\Exception $e) {
+        $success = false;
+        $code = 500;
+        $error = $e->getMessage();
+        Log::error("Failed to update min inventory: $error");
+    } finally {
+        return response($res);
+    }
+})->middleware('shopify.auth');
+
+

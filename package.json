@@ -12,12 +12,12 @@
     "info": "shopify app info"
   },
   "dependencies": {
-    "@shopify/app": "3.46.0",
-    "@shopify/cli": "3.46.0",
+    "@shopify/app": "3.48.1",
+    "@shopify/cli": "3.48.1",
     "@shopify/shopify_function": "0.0.3",
     "javy": "0.0.3",
-    "axios": "^1.4.0",
-    "react": "^17.0.2"
+    "react": "^17.0.2",
+    "xlsx": "^0.18.5"
   },
   "author": "Admin",
   "private": true,
