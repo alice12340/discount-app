@@ -25,9 +25,7 @@ RUN composer clearcache
 
 # RUN cd frontend && npm install && npm cache clean && npm run build --force 
 RUN cd frontend
-RUN npm install -g npm
-RUN npm cache clean
-RUN npm install && npm run build --force 
+RUN npm install -g npm && npm cache clean && npm install && npm run build --force 
 RUN composer build
 # RUN chown -R www-data:www-data  /app
 RUN chmod +x /app/entrypoint.sh
