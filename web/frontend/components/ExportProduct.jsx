@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ExcelJS from 'exceljs';
 import { useAuthenticatedFetch } from '../hooks';
 
-export default function ExportProduct({ trigger }) {
+export default function ExportProduct({ trigger, queryUrl, updateLoading}) {
   const fetch = useAuthenticatedFetch();
   const myFunctionRef = useRef();
   const [isLoading, setIsLoading] = useState(null);
@@ -11,7 +11,7 @@ export default function ExportProduct({ trigger }) {
     try {
       let currentPage = 1;
       let allData = [];
-      let url = '/api/product/List';
+      let url = queryUrl;
 
       while (true) {
         setIsLoading(true);
@@ -90,7 +90,6 @@ export default function ExportProduct({ trigger }) {
           // Set the desired width and height
           const desiredWidth = 50; // Adjust as needed
           const desiredHeight = desiredWidth / aspectRatio;
-          console.log(desiredWidth, desiredHeight);
 
           // Set the image position and dimensions
           worksheet.addImage(imageId, {
@@ -110,7 +109,6 @@ export default function ExportProduct({ trigger }) {
 
           //Now loop through every row's cell and finally set alignment
           row.eachCell({includeEmpty: true}, (cell => {
-            console.log(cell._address)
             if (cell._address.indexOf("B") !== -1 || cell._address.indexOf("A") !== -1) {
               cell.alignment = { vertical: 'middle', wrapText: true };
             }
@@ -121,6 +119,7 @@ export default function ExportProduct({ trigger }) {
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const url = window.URL.createObjectURL(blob);
+        updateLoading(false);
         const anchor = document.createElement('a');
         anchor.href = url;
         anchor.download = 'data.xlsx';

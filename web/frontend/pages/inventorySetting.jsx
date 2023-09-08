@@ -1,6 +1,6 @@
 import { useForm, useField } from "@shopify/react-form";
 import { Toast } from "@shopify/app-bridge/actions";
-import { useAppBridge } from "@shopify/app-bridge-react";
+import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 
 
 import {
@@ -37,7 +37,6 @@ export default function InventorySetting() {
         url: "/api/inventorySetting/detail",
         reactQueryOptions: {
           onSuccess: (res) => {
-            console.log(res)
             setMinInventory(res);
             setIsLoading(false);
           },
@@ -116,6 +115,10 @@ export default function InventorySetting() {
                 loading: submitting,
             }}
         >
+            <TitleBar
+                title="Inventory Setting"
+            
+            />
             <Layout>
                 {errorBanner}
                 <Layout.Section>
