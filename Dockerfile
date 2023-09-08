@@ -24,7 +24,7 @@ RUN composer clearcache
 # RUN chown www-data:www-data /app/storage/db.sqlite
 
 # RUN cd frontend && npm install --force && npm cache clean --force && npm run build --force 
-RUN cd frontend && npm update @shopify/polaris@10.49.1 && npm run build
+RUN cd frontend && npm update @shopify/polaris && npm run build
 RUN composer build
 # RUN chown -R www-data:www-data  /app
 RUN chmod +x /app/entrypoint.sh
