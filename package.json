@@ -1,5 +1,5 @@
 {
-  "name": "empowered-strategy-app",
+  "name": "lucrative-strategy-app",
   "version": "1.0.0",
   "license": "UNLICENSED",
   "scripts": {
@@ -12,12 +12,9 @@
     "info": "shopify app info"
   },
   "dependencies": {
-    "@shopify/app": "3.48.1",
-    "@shopify/cli": "3.48.1",
-    "@shopify/shopify_function": "0.0.3",
-    "javy": "0.0.3",
-    "react": "^17.0.2",
-    "xlsx": "^0.18.5"
+    "@shopify/app": "3.47.3",
+    "@shopify/cli": "3.47.3",
+    "axios": "^1.4.0"
   },
   "author": "Admin",
   "private": true,
@@ -26,7 +23,10 @@
     "web/frontend",
     "extensions/*"
   ],
+  "description": "This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using PHP and React. It contains the basics for building a Shopify app.",
+  "main": "index.js",
   "devDependencies": {
     "laravel-mix": "^6.0.49"
-  }
+  },
+  "keywords": []
 }
