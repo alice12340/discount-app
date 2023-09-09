@@ -25,7 +25,7 @@ RUN composer clearcache
 
 # RUN cd frontend && npm install && npm cache clean && npm run build --force 
 # RUN cd frontend && npm install -g npm@lastest && npm rm -rf node_modules && rm package-lock.json && npm install --save --legacy-peer-deps && npm run build --force 
-RUN cd frontend && npm install && npm run build
+RUN cd frontend && npm install  --legacy-peer-deps && npm run build
 RUN composer build
 RUN chmod +x /app/entrypoint.sh
 
