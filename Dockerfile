@@ -24,9 +24,9 @@ RUN composer clearcache
 # RUN chown www-data:www-data /app/storage/db.sqlite
 
 # RUN cd frontend && npm install && npm cache clean && npm run build --force 
-RUN cd frontend && npm install -g npm@lastest && npm rm -rf node_modules && rm package-lock.json && npm install --save --legacy-peer-deps && npm run build --force 
+# RUN cd frontend && npm install -g npm@lastest && npm rm -rf node_modules && rm package-lock.json && npm install --save --legacy-peer-deps && npm run build --force 
+RUN cd frontend && npm install && npm run build
 RUN composer build
-# RUN chown -R www-data:www-data  /app
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT [ "/app/entrypoint.sh" ]
