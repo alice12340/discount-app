@@ -308,7 +308,16 @@ Route::post('api/updateMinInventory', function (Request $request) {
     $success = $code = $error = null;
     $inventorySetting = $request->post('inventorySetting');
     try {
-        $res = WarehouseSetting::where('shop', $session->getShop())->update(['min_inventory' => $inventorySetting['minInventory']]);
+        $exist = WarehouseSetting::where('shop', $session->getShop())->count();
+        if ($exist){
+            $res = WarehouseSetting::where('shop', $session->getShop())->update(['min_inventory' => $inventorySetting['minInventory']]);
+        }else{
+            $res = WarehouseSetting::create([
+                'shop' => $session->getShop(),
+                'min_inventory' => $inventorySetting['minInventory']
+            ]);
+        }
+        
     } catch (\Exception $e) {
         $success = false;
         $code = 500;
