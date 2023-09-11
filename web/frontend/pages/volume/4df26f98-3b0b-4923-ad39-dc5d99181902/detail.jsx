@@ -26,6 +26,9 @@ import {
     PageActions,
     Frame,
     Loading,
+    Form,
+    VerticalStack,
+    LegacyCard,
 } from "@shopify/polaris";
 import { data } from "@shopify/app-bridge/actions/Modal";
 import { useAppQuery, useAuthenticatedFetch } from "../../../hooks";
@@ -218,15 +221,19 @@ export default function DiscountDetail() {
                                 </Stack>
                             </Card.Section>
                         </Card>
-                        <ActiveDatesCard
-                            startDate={startDate}
-                            endDate={endDate}
-                            timezoneAbbreviation="EST"
-                        />
+                        <LegacyCard>
+                        <VerticalStack align="space-around" gap="2">
+                            <ActiveDatesCard
+                                startDate={startDate}
+                                endDate={endDate}
+                                timezoneAbbreviation="EST"
+                            />
+                        </VerticalStack>
+                        </LegacyCard>
                     </form>
                 </Layout.Section>
                 <Layout.Section secondary>
-                    <SummaryCard
+                    <SummaryCard align="space-around"
                         header={{
                             discountMethod: discountMethod.value,
                             discountDescriptor:
@@ -262,7 +269,7 @@ export default function DiscountDetail() {
                             content: "Save discount",
                             onAction: submit,
                             disabled: !dirty,
-                            loading: submitting,
+                            loading: isLoading,
                         }}
                         secondaryActions={[
                             {
