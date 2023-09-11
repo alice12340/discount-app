@@ -6,7 +6,8 @@ import {
   EmptySearchResult,
   Loading,
   Frame,
-  Pagination
+  Pagination,
+  Link
 } from '@shopify/polaris';
 
 import {
@@ -110,11 +111,16 @@ export default function ProductList() {
   );
   const rowMarkup = !isLoading ? data.products.map(
     (
-      {id, title, status, totalInventory, featuredImage},
+      {id, productUrl, title, status, totalInventory, featuredImage},
       index,
     ) => (
       <IndexTable.Row id={id} key={id} position={index}>
-        <IndexTable.Cell width={20}>{title}</IndexTable.Cell>
+        <IndexTable.Cell>
+        <Link
+            dataPrimaryLink
+            url={productUrl}
+          >
+          {title}</Link></IndexTable.Cell>
         <IndexTable.Cell> <img src={featuredImage} alt="" width="50" /></IndexTable.Cell>
         <IndexTable.Cell>{status}</IndexTable.Cell>
         <IndexTable.Cell>{totalInventory}</IndexTable.Cell>

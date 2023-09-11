@@ -24,6 +24,8 @@ import {
     TextField,
     Stack,
     PageActions,
+    Frame,
+    Loading,
 } from "@shopify/polaris";
 import { data } from "@shopify/app-bridge/actions/Modal";
 import { useAppQuery, useAuthenticatedFetch } from "../../../hooks";
@@ -171,6 +173,7 @@ export default function DiscountDetail() {
         ) : null;
 
     return (
+        !isLoading ?
         // Render a discount form using Polaris components and the discount app components
         <Page
             title="Create Order discount"
@@ -270,6 +273,11 @@ export default function DiscountDetail() {
                     />
                 </Layout.Section>
             </Layout>
+           
         </Page>
+        :
+         <Frame>
+             <Loading />
+         </Frame>
     );
 }

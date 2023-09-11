@@ -21,7 +21,7 @@ export default function ExportProduct({ trigger, queryUrl, updateLoading}) {
         if (response.ok) {
           const data = await response.json();
           allData = allData.concat(data.products);
-          url = `/api/product/List?type=next&cursor=${data.products[data.products.length - 1]['cursor']}`;
+          url = url + `&type=next&cursor=${data.products[data.products.length - 1]['cursor']}`;
           currentPage++;
           if (!data.pageInfo.hasNextPage) {
             // No more records, exit the loop

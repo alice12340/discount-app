@@ -96,16 +96,21 @@ class ProductFetch
         }
         $re =  [];
         $response = $response->getDecodedBody();
+        $admin_url = 'https://admin.shopify.com/store/wuxi-colossus/products/';
+  
         foreach ($response['data']['products']['edges'] as $k => $v) {
-          $item = [
-            'id' => $v['node']['id'],
-            'title' => $v['node']['title'],
-            'status' => $v['node']['status'],
-            'featuredImage' => $v['node']['featuredImage']['url'],
-            'totalInventory' => $v['node']['totalInventory'],
-            'cursor' => $v['cursor']
-          ];
-          array_push($re, $item);
+            $in_info = explode('Product/', $v['node']['id']);
+
+            $item = [
+                'id' => $v['node']['id'],
+                'productUrl' => $admin_url.$in_info[1],
+                'title' => $v['node']['title'],
+                'status' => $v['node']['status'],
+                'featuredImage' => $v['node']['featuredImage']['url'],
+                'totalInventory' => $v['node']['totalInventory'],
+                'cursor' => $v['cursor']
+            ];
+            array_push($re, $item);
         }
 
         $result = array(
