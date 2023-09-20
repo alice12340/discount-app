@@ -1,5 +1,6 @@
 window.axios = require('axios');
 var domain = 'https://carmen-grocery-israeli-llp.trycloudflare.com';
+//get cart attributes from cart.js
 axios.get('cart.js').then(function (response) {
   var payPeriod = response.data.attributes.payPeriod;
   console.log(payPeriod);
@@ -10,6 +11,7 @@ axios.get('cart.js').then(function (response) {
         selectContext += ' selected="selected"';
       }
   selectContext += '>please select</option>';
+  //get the options from localstorage first then from the api
   if (!localStorage.getItem('config')){
     axios.get(domain + '/api/getCartDiscounts').then(function (re) {
       localStorage.setItem('config', JSON.stringify(re.data));
